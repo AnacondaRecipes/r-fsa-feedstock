@@ -16,6 +16,7 @@ build:
   merge_build_host: true  # [win]
   number: 0
   noarch: generic
+  skip: True # [not linux64]
   rpaths:
     - lib/R/lib/
     - lib/
@@ -25,7 +26,7 @@ requirements:
     - {{ posix }}zip               # [win]
     - cross-r-base {{ r_base }}    # [build_platform != target_platform]
   host:
-    - r-base
+    - r-base {{ r_version }}
     - r-car
     - r-dplyr
     - r-dunn.test
@@ -34,7 +35,7 @@ requirements:
     - r-sciplot
     - r-withr
   run:
-    - r-base
+    - r-base {{ r_version }}
     - r-car
     - r-dplyr
     - r-dunn.test
@@ -60,6 +61,23 @@ extra:
   recipe-maintainers:
     - conda-forge/r
     - droglenc
+
+  skip-lints:
+    # These are needed because of bug: https://github.com/anaconda-distribution/anaconda-linter/issues/197
+    - http_url
+    - invalid_url
+
+    - host_section_needs_exact_pinnings
+    - missing_dev_url
+    - missing_description
+    - missing_documentation
+
+  anaconda-services:
+    ref:  https://anaconda.zendesk.com/agent/tickets/35116
+    reason: "needed for r-devtools"
+    recipe-maintainers:
+      - bkreider
+
 
 # Package: FSA
 # Version: 0.9.1
